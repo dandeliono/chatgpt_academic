@@ -39,9 +39,9 @@ CONCURRENT_COUNT = 100
 
 # 设置用户名和密码
 AUTHENTICATION = []
-USERNAME = os.environ.get("username", "")
-PASSWORD = os.environ.get("password", "")
-if USERNAME is not None and PASSWORD is not None:
+USERNAME = os.environ.get("USERNAME", "")
+PASSWORD = os.environ.get("PASSWORD", "")
+if USERNAME and PASSWORD and not (USERNAME.isspace() or PASSWORD.isspace()):
     AUTHENTICATION = [(USERNAME, PASSWORD)]
 
 # [("username", "password"), ("username2", "password2"), ...]
