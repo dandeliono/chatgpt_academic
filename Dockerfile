@@ -4,10 +4,10 @@ FROM python:3.11-slim-buster AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc libc6-dev && \
     rm -rf /var/lib/apt/lists/*
-
+ENV PATH="/install/bin:${PATH}"
 WORKDIR /install
 COPY requirements.txt .
-RUN pip3 install --prefix=/install --no-cache-dir --upgrade pip && \
+RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install --prefix=/install --no-cache-dir gradio requests[socks] mdtex2html && \
     rm -rf /root/.cache/pip
 
