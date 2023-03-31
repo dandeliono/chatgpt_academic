@@ -35,10 +35,10 @@ jobs:  # workflow中的job
           push: true   # 是否推送镜像到Docker Hub
           tags: |
             codeare/chatgpt_academic:latest
-            codeare/chatgpt_academic:${{ steps.meta.outputs.tags }}
+            ${{ steps.meta.outputs.tags }}
             codeare/chatgpt_academic:$(echo ${{ github.sha }} | cut -c1-7)
             codeare/chatgpt_academic-arm64:latest
-            codeare/chatgpt_academic-arm64:${{ steps.meta.outputs.tags }}
+            ${{ steps.meta.outputs.tags }}-arm64
             codeare/chatgpt_academic-arm64:$(echo ${{ github.sha }} | cut -c1-7)
           platforms: |
             linux/amd64 
