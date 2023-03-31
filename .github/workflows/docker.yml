@@ -34,12 +34,12 @@ jobs:  # workflow中的job
           context: .   # Dockerfile所在的路径
           push: true   # 是否推送镜像到Docker Hub
           tags: |   # 镜像的tag列表
-            codeare/chatgpt_academic:latest   # 最新版本的tag
-            codeare/chatgpt_academic:${{ github.ref }}   # 使用Git的tag作为tag
-            codeare/chatgpt_academic:$(echo ${{ github.sha }} | cut -c1-7)   # 使用Git的sha作为tag
-            codeare/chatgpt_academic-arm64:latest   # 最新版本的ARM64架构的tag
-            codeare/chatgpt_academic-arm64:${{ github.ref }}   # 使用Git的tag作为ARM64架构的tag
-            codeare/chatgpt_academic-arm64:$(echo ${{ github.sha }} | cut -c1-7)   # 使用Git的sha作为ARM64架构的tag
+            codeare/chatgpt_academic:latest 
+            codeare/chatgpt_academic:${{ github.ref }} 
+            codeare/chatgpt_academic:$(echo ${{ github.sha }} | cut -c1-7) 
+            codeare/chatgpt_academic-arm64:latest  
+            codeare/chatgpt_academic-arm64:${{ github.ref }}  
+            codeare/chatgpt_academic-arm64:$(echo ${{ github.sha }} | cut -c1-7)  
           platforms: |   # 构建的平台列表
-            linux/amd64   # x86架构
-            linux/arm64   # ARM64架构
+            linux/amd64 
+            linux/arm64 
