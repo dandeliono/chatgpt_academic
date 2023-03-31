@@ -1,8 +1,4 @@
-FROM python:3.11
-
-RUN echo '[global]' > /etc/pip.conf && \
-    echo 'index-url = https://mirrors.aliyun.com/pypi/simple/' >> /etc/pip.conf && \
-    echo 'trusted-host = mirrors.aliyun.com' >> /etc/pip.conf
+FROM python:3.11.2-alpine3.17
 
 RUN pip3 install gradio requests[socks] mdtex2html
 
