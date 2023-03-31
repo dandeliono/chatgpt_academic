@@ -26,7 +26,7 @@ else:
 TIMEOUT_SECONDS = 25
 
 # 网页的端口, -1代表随机端口
-WEB_PORT = os.environ.get("PORT", "80")
+WEB_PORT = os.environ.get("PORT", 80)
 
 # 如果OpenAI不响应（网络卡顿、代理失败、KEY失效），重试的次数限制
 MAX_RETRY = 2
