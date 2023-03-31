@@ -23,13 +23,13 @@ jobs:  # workflow中的job
 
       - name: Extract metadata (tags, labels) for Docker   # 从代码中提取镜像信息
         id: meta   # 用于后续步骤引用该步骤的输出
-        uses: docker/metadata-action@v5   # 使用docker提供的metadata action
+        uses: docker/metadata-action@v4   # 使用docker提供的metadata action
         with:
           images: codeare/chatgpt_academic   # 镜像名称
 
       - name: Build and push   # 构建和推送镜像
         id: docker_build   # 用于后续步骤引用该步骤的输出
-        uses: docker/build-push-action@v2   # 使用docker提供的build-push action
+        uses: docker/build-push-action@v4   # 使用docker提供的build-push action
         with:
           context: .   # Dockerfile所在的路径
           push: true   # 是否推送镜像到Docker Hub
