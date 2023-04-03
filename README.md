@@ -2,9 +2,9 @@
 
 # ChatGPT 学术优化
 
-**如果喜欢这个项目，请给它一个Star；如果你发明了更好用的学术快捷键，欢迎发issue或者pull requests**
+**如果喜欢这个项目，请给它一个Star；如果你发明了更好用的快捷键或函数插件，欢迎发issue或者pull requests（dev分支）**
 
-If you like this project, please give it a Star. If you've come up with more useful academic shortcuts, feel free to open an issue or pull request.
+If you like this project, please give it a Star. If you've come up with more useful academic shortcuts or functional plugins, feel free to open an issue or pull request （to `dev` branch）.
 
 ```
 代码中参考了很多其他优秀项目中的设计，主要包括：
@@ -19,8 +19,12 @@ https://github.com/polarwinkel/mdtex2html
 ```
 
 > **Note**
-> 请注意只有“红颜色”标识的函数插件（按钮）才支持读取文件。目前暂不能完善地支持pdf格式文献的翻译解读，尚不支持word格式文件的读取。
-
+>
+> 1.请注意只有“红颜色”标识的函数插件（按钮）才支持读取文件。目前对pdf/word格式文件的支持插件正在逐步完善中，需要更多developer的帮助。
+>
+> 2.本项目中每个文件的功能都在自译解[`self_analysis.md`](https://github.com/binary-husky/chatgpt_academic/wiki/chatgpt-academic%E9%A1%B9%E7%9B%AE%E8%87%AA%E8%AF%91%E8%A7%A3%E6%8A%A5%E5%91%8A)详细说明。随着版本的迭代，您也可以随时自行点击相关函数插件，调用GPT重新生成项目的自我解析报告。常见问题汇总在[`wiki`](https://github.com/binary-husky/chatgpt_academic/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)当中。
+> 
+> 3.如果您不太习惯部分中文命名的函数、注释或者界面，您可以随时点击相关函数插件，调用ChatGPT一键生成纯英文的项目源代码。
 
 <div align="center">
     
@@ -31,23 +35,28 @@ https://github.com/polarwinkel/mdtex2html
 一键代码解释 | 可以正确显示代码、解释代码
 自定义快捷键 | 支持自定义快捷键
 配置代理服务器 | 支持配置代理服务器
-模块化设计 | 支持自定义高阶的实验性功能
-自我程序剖析 | [实验性功能] 一键读懂本项目的源代码
-程序剖析 | [实验性功能] 一键可以剖析其他Python/C++项目
-读论文 | [实验性功能] 一键解读latex论文全文并生成摘要
-批量注释生成 | [实验性功能] 一键批量生成函数注释
-chat分析报告生成 | [实验性功能] 运行后自动生成总结汇报
+模块化设计 | 支持自定义高阶的实验性功能与[函数插件]，插件支持[热更新](https://github.com/binary-husky/chatgpt_academic/wiki/%E5%87%BD%E6%95%B0%E6%8F%92%E4%BB%B6%E6%8C%87%E5%8D%97)
+自我程序剖析 | [函数插件] 一键读懂本项目的源代码
+程序剖析 | [函数插件] 一键可以剖析其他Python/C/C++/Java项目树
+读论文 | [函数插件] 一键解读latex论文全文并生成摘要
+批量注释生成 | [函数插件] 一键批量生成函数注释
+chat分析报告生成 | [函数插件] 运行后自动生成总结汇报
+arxiv小助手 | [函数插件] 输入arxiv文章url即可一键翻译摘要+下载PDF
 公式显示 | 可以同时显示公式的tex形式和渲染形式
 图片显示 | 可以在markdown中显示图片
+多线程函数插件支持 | 支持多线调用chatgpt，一键处理海量文本或程序
 支持GPT输出的markdown表格 | 可以输出支持GPT的markdown表格
+启动暗色gradio[主题](https://github.com/binary-husky/chatgpt_academic/issues/173) | 在浏览器url后面添加```/?__dark-theme=true```可以切换dark主题
+huggingface免科学上网[在线体验](https://huggingface.co/spaces/qingxu98/gpt-academic) | 登陆huggingface后复制[此空间](https://huggingface.co/spaces/qingxu98/gpt-academic)
+…… | ……
 
 </div>
 
+<!-- - 新界面（左：master主分支, 右：dev开发前沿） -->
 - 新界面
 <div align="center">
-<img src="https://user-images.githubusercontent.com/96192199/228600410-7d44e34f-63f1-4046-acb8-045cb05da8bb.png" width="700" >
+<img src="https://user-images.githubusercontent.com/96192199/229222589-b30ff298-adb1-4e1e-8352-466085919bfb.png" width="700" >
 </div>
-
 
 
 - 所有按钮都通过读取functional.py动态生成，可随意加自定义功能，解放粘贴板
@@ -79,45 +88,43 @@ chat分析报告生成 | [实验性功能] 运行后自动生成总结汇报
 
 ## 直接运行 (Windows, Linux or MacOS)
 
-下载项目
-
+### 1. 下载项目
 ```sh
 git clone https://github.com/binary-husky/chatgpt_academic.git
 cd chatgpt_academic
 ```
 
-我们建议将`config.py`复制为`config_private.py`并将后者用作个性化配置文件以避免`config.py`中的变更影响你的使用或不小心将包含你的OpenAI API KEY的`config.py`提交至本项目。
+### 2. 配置API_KEY和代理设置
 
-```sh
-cp config.py config_private.py
+在`config.py`中，配置 海外Proxy 和 OpenAI API KEY，说明如下
 ```
-
-在`config_private.py`中，配置 海外Proxy 和 OpenAI API KEY
-```
-1. 如果你在国内，需要设置海外代理才能够使用 OpenAI API，你可以通过 config.py 文件来进行设置。
+1. 如果你在国内，需要设置海外代理才能够顺利使用 OpenAI API，设置方法请仔细阅读config.py（1.修改其中的USE_PROXY为True; 2.按照说明修改其中的proxies）。
 2. 配置 OpenAI API KEY。你需要在 OpenAI 官网上注册并获取 API KEY。一旦你拿到了 API KEY，在 config.py 文件里配置好即可。
+3. 与代理网络有关的issue（网络超时、代理不起作用）汇总到 https://github.com/binary-husky/chatgpt_academic/issues/1
 ```
-安装依赖
+（P.S. 程序运行时会优先检查是否存在名为`config_private.py`的私密配置文件，并用其中的配置覆盖`config.py`的同名配置。因此，如果您能理解我们的配置读取逻辑，我们强烈建议您在`config.py`旁边创建一个名为`config_private.py`的新配置文件，并把`config.py`中的配置转移（复制）到`config_private.py`中。`config_private.py`不受git管控，可以让您的隐私信息更加安全。）
 
+
+### 3. 安装依赖
 ```sh
-python -m pip install -r requirements.txt
+# （选择一）推荐
+python -m pip install -r requirements.txt   
+
+# （选择二）如果您使用anaconda，步骤也是类似的：
+# （选择二.1）conda create -n gptac_venv python=3.11
+# （选择二.2）conda activate gptac_venv
+# （选择二.3）python -m pip install -r requirements.txt
+
+# 备注：使用官方pip源或者阿里pip源，其他pip源（如一些大学的pip）有可能出问题，临时换源方法： 
+# python -m pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 ```
 
-或者，如果你希望使用`conda`
-
-```sh
-conda create -n gptac 'gradio>=3.23' requests
-conda activate gptac
-python3 -m pip install mdtex2html
-```
-
-运行
-
+### 4. 运行
 ```sh
 python main.py
 ```
 
-测试实验性功能
+### 5. 测试实验性功能
 ```
 - 测试C++项目头文件分析
     input区域 输入 `./crazy_functions/test_project/cpp/libJPG` ， 然后点击 "[实验] 解析整个C++项目（input输入项目根路径）"
@@ -130,6 +137,7 @@ python main.py
 - 测试实验功能模板函数（要求gpt回答历史上的今天发生了什么），您可以根据此函数为模板，实现更复杂的功能
     点击 "[实验] 实验功能函数模板"
 ```
+
 ## 使用docker (Linux)
 
 ``` sh
@@ -137,7 +145,7 @@ python main.py
 git clone https://github.com/binary-husky/chatgpt_academic.git
 cd chatgpt_academic
 # 配置 海外Proxy 和 OpenAI API KEY
-config.py
+用任意文本编辑器编辑 config.py
 # 安装
 docker build -t gpt-academic .
 # 运行
@@ -157,6 +165,13 @@ input区域 输入 ./crazy_functions/test_project/latex/attention ， 然后点�
 input区域 输入 ./crazy_functions/test_project/python/dqn ， 然后点击 "[实验] 解析整个py项目（input输入项目根路径）"
 
 ```
+
+## 其他部署方式
+- 使用WSL2（Windows Subsystem for Linux 子系统）
+请访问[部署wiki-1](https://github.com/binary-husky/chatgpt_academic/wiki/%E4%BD%BF%E7%94%A8WSL2%EF%BC%88Windows-Subsystem-for-Linux-%E5%AD%90%E7%B3%BB%E7%BB%9F%EF%BC%89%E9%83%A8%E7%BD%B2)
+
+- nginx远程部署
+请访问[部署wiki-2](https://github.com/binary-husky/chatgpt_academic/wiki/%E8%BF%9C%E7%A8%8B%E9%83%A8%E7%BD%B2%E7%9A%84%E6%8C%87%E5%AF%BC)
 
 
 ## 自定义新的便捷按钮（学术快捷键自定义）
@@ -181,7 +196,7 @@ input区域 输入 ./crazy_functions/test_project/python/dqn ， 然后点击 "[
 如果你发明了更好用的学术快捷键，欢迎发issue或者pull requests！
 
 ## 配置代理
-
+### 方法一：常规方法
 在```config.py```中修改端口与代理软件对应
 
 <div align="center">
@@ -193,14 +208,17 @@ input区域 输入 ./crazy_functions/test_project/python/dqn ， 然后点击 "[
 ```
 python check_proxy.py
 ```
+### 方法二：纯新手教程
+[纯新手教程](https://github.com/binary-husky/chatgpt_academic/wiki/%E4%BB%A3%E7%90%86%E8%BD%AF%E4%BB%B6%E9%97%AE%E9%A2%98%E7%9A%84%E6%96%B0%E6%89%8B%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%88%E6%96%B9%E6%B3%95%E5%8F%AA%E9%80%82%E7%94%A8%E4%BA%8E%E6%96%B0%E6%89%8B%EF%BC%89)
 
 ## 兼容性测试
 
 ### 图片显示：
+
 <div align="center">
-<img src="https://user-images.githubusercontent.com/96192199/226906087-b5f1c127-2060-4db9-af05-487643b21ed9.png" height="200" >
-<img src="https://user-images.githubusercontent.com/96192199/226906703-7226495d-6a1f-4a53-9728-ce6778cbdd19.png" height="200" >
+<img src="https://user-images.githubusercontent.com/96192199/228737599-bf0a9d9c-1808-4f43-ae15-dfcc7af0f295.png" width="800" >
 </div>
+
 
 ### 如果一个程序能够读懂并剖析自己：
 
@@ -235,7 +253,7 @@ python check_proxy.py
 
 ### 模块化功能设计
 <div align="center">
-<img src="https://user-images.githubusercontent.com/96192199/227504981-4c6c39c0-ae79-47e6-bffe-0e6442d9da65.png" height="400" >
+<img src="https://user-images.githubusercontent.com/96192199/229288270-093643c1-0018-487a-81e6-1d7809b6e90f.png" height="400" >
 <img src="https://user-images.githubusercontent.com/96192199/227504931-19955f78-45cd-4d1c-adac-e71e50957915.png" height="400" >
 </div>
 
@@ -243,5 +261,5 @@ python check_proxy.py
 
 - (Top Priority) 调用另一个开源项目text-generation-webui的web接口，使用其他llm模型
 - 总结大工程源代码时，文本过长、token溢出的问题（目前的方法是直接二分丢弃处理溢出，过于粗暴，有效信息大量丢失）
-- UI不够美观
+
 

@@ -20,10 +20,12 @@ import importlib
 
 # config_private.py放自己的秘密如API和代理网址
 # 读取时首先看是否存在私密的config_private配置文件（不受git管控），如果有，则覆盖原config文件
-try: from config_private import proxies, API_URL, API_KEY, TIMEOUT_SECONDS, MAX_RETRY, LLM_MODEL
-except: from config import proxies, API_URL, API_KEY, TIMEOUT_SECONDS, MAX_RETRY, LLM_MODEL
+from toolbox import get_conf
+proxies, API_URL, API_KEY, TIMEOUT_SECONDS, MAX_RETRY, LLM_MODEL = \
+    get_conf('proxies', 'API_URL', 'API_KEY', 'TIMEOUT_SECONDS', 'MAX_RETRY', 'LLM_MODEL')
 
-timeout_bot_msg = '[local] Request timeout, network error. please check proxy settings in config.py.'
+timeout_bot_msg = '[Local Message] Request timeout. Network error. Please check proxy settings in config.py.' + \
+                  '网络错误，检查代理服务器是否可用，以及代理设置的格式是否正确，格式须是[协议]://[地址]:[端口]，缺一不可。'
 
 def get_full_error(chunk, stream_response):
     """
@@ -94,13 +96,19 @@ def predict_no_ui_long_connection(inputs, top_p, temperature, history=[], sys_pr
         except StopIteration: break
         if len(chunk)==0: continue
         if not chunk.startswith('data:'): 
-            chunk = get_full_error(chunk.encode('utf8'), stream_response)
-            raise ConnectionAbortedError("OpenAI拒绝了请求:" + chunk.decode())
-        delta = json.loads(chunk.lstrip('data:'))['choices'][0]["delta"]
+            error_msg = get_full_error(chunk.encode('utf8'), stream_response).decode()
+            if "reduce the length" in error_msg:
+                raise ConnectionAbortedError("OpenAI拒绝了请求:" + error_msg)
+            else:
+                raise RuntimeError("OpenAI拒绝了请求：" + error_msg)
+        json_data = json.loads(chunk.lstrip('data:'))['choices'][0]
+        delta = json_data["delta"]
         if len(delta) == 0: break
         if "role" in delta: continue
         if "content" in delta: result += delta["content"]; print(delta["content"], end='')
         else: raise RuntimeError("意外Json结构："+delta)
+    if json_data['finish_reason'] == 'length':
+        raise ConnectionAbortedError("正常结束，但显示Token不足。")
     return result
 
 
@@ -117,8 +125,9 @@ def predict(inputs, top_p, temperature, chatbot=[], history=[], system_prompt=''
     """
     if additional_fn is not None:
         import functional
-        importlib.reload(functional)
+        importlib.reload(functional)    # 热更新prompt
         functional = functional.get_functionals()
+        if "PreProcess" in functional[additional_fn]: inputs = functional[additional_fn]["PreProcess"](inputs)  # 获取预处理函数（如果有的话）
         inputs = functional[additional_fn]["Prefix"] + inputs + functional[additional_fn]["Suffix"]
 
     if stream:
@@ -177,14 +186,16 @@ def predict(inputs, top_p, temperature, chatbot=[], history=[], system_prompt=''
                     error_msg = chunk.decode()
                     if "reduce the length" in error_msg:
                         chatbot[-1] = (chatbot[-1][0], "[Local Message] Input (or history) is too long, please reduce input or clear history by refreshing this page.")
-                        history = []
+                        history = []    # 清除历史
                     elif "Incorrect API key" in error_msg:
                         chatbot[-1] = (chatbot[-1][0], "[Local Message] Incorrect API key provided.")
+                    elif "exceeded your current quota" in error_msg:
+                        chatbot[-1] = (chatbot[-1][0], "[Local Message] You exceeded your current quota. OpenAI以账户额度不足为由，拒绝服务.")
                     else:
                         from toolbox import regular_txt_to_markdown
-                        tb_str = regular_txt_to_markdown(traceback.format_exc())
-                        chatbot[-1] = (chatbot[-1][0], f"[Local Message] Json Error \n\n {tb_str} \n\n {regular_txt_to_markdown(chunk.decode()[4:])}")
-                    yield chatbot, history, "Json解析不合常规" + error_msg
+                        tb_str = '```\n' + traceback.format_exc() + '```'
+                        chatbot[-1] = (chatbot[-1][0], f"[Local Message] 异常 \n\n{tb_str} \n\n{regular_txt_to_markdown(chunk.decode()[4:])}")
+                    yield chatbot, history, "Json异常" + error_msg
                     return
 
 def generate_payload(inputs, top_p, temperature, history, system_prompt, stream):
