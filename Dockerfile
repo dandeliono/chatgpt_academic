@@ -8,7 +8,7 @@ ENV PATH="/install/bin:${PATH}"
 WORKDIR /install
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --prefix=/install --no-cache-dir gradio requests[socks] mdtex2html && \
+    pip3 install --prefix=/install --no-cache-dir gradio requests[socks] mdtex2html pymupdf && \
     rm -rf /root/.cache/pip
 
 # 第二阶段：构建最终镜像
