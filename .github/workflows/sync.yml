@@ -13,5 +13,6 @@ jobs:
         with:
           source_repo: https://github.com/binary-husky/chatgpt_academic
           source_branch: master
+          destination_repo: https://github.com/dandeliono/chatgpt_academic
           destination_branch: master
           github_token: ${{ secrets.GITHUB_TOKEN }}
