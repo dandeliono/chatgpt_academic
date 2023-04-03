@@ -41,6 +41,9 @@ LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-3.5-turbo")
 # OpenAI的API_URL
 API_URL = "https://api.openai.com/v1/chat/completions"
 
+# OpenAI的API_URL
+API_URL = "https://api.openai.com/v1/chat/completions"
+
 # 设置并行使用的线程数
 CONCURRENT_COUNT = 100
 
