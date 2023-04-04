@@ -6,13 +6,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Sync Fork
-        uses: wei/git-sync@v1
+        uses:  tgymnich/fork-sync@v1.8
         with:
-          source_repo: https://github.com/binary-husky/chatgpt_academic
-          source_branch: master
-          destination_repo: https://github.com/dandeliono/chatgpt_academic
-          destination_branch: master
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          owner: binary-husky 
+          head: master
+          base: master
