@@ -1,6 +1,5 @@
+# [step 1]>> 例如： API_KEY = "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" （此key无效）
 import os
-
-# API_KEY = "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" 此key无效
 API_KEY = os.environ.get("API_KEY", "None")
 
 # [step 2]>> 改为True应用代理，如果直接在海外服务器部署，此处不修改
@@ -37,9 +36,6 @@ MAX_RETRY = 2
 
 # 选择的OpenAI模型是（gpt4现在只对申请成功的人开放）
 LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-3.5-turbo")
-
-# OpenAI的API_URL
-API_URL = "https://api.openai.com/v1/chat/completions"
 
 # OpenAI的API_URL
 API_URL = "https://api.openai.com/v1/chat/completions"
